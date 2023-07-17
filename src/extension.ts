@@ -19,10 +19,10 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Hello World from jim-vsc-plugin-demo!');
 		console.log('command jim-vsc-plugin-demo.helloWorld triggered!');
 	});
-	const obj = {
-		name: 'jack',
-		age: 20,
-	};
+	// const obj = {
+	// 	name: 'jack',
+	// 	age: 20,
+	// };
 	console.log('obj', obj);
 
 	context.subscriptions.push(disposable);
