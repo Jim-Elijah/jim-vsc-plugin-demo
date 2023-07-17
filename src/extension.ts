@@ -21,6 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	const obj = {
 		name: 'jack',
+		age: 20,
 	};
 	console.log('obj', obj);
 
