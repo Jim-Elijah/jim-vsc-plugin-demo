@@ -27,19 +27,6 @@
     "lint": "eslint src --fix --ext ts",
     "test": "node ./out/test/runTest.js"
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{ts,js}": [
-      "prettier --write",
-      "eslint --fix",
-      "git add"
-    ]
-  },
   "devDependencies": {
     "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.6",
@@ -54,7 +41,7 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^5.0.0",
     "glob": "^8.1.0",
-    "husky": "^8.0.3",
+    "husky": "^8.0.0",
     "lint-staged": "^13.2.3",
     "mocha": "^10.2.0",
     "prettier": "^3.0.0",

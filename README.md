@@ -69,3 +69,18 @@ You can author your README using Visual Studio Code. Here are some useful editor
 * [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
 **Enjoy!**
+
+
+"husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{ts,js}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
+  },
