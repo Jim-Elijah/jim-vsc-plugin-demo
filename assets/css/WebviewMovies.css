@@ -1,0 +1,8 @@
+.news-wrapper {
+  padding-left: 16px;
+}
+.news-item {
+  list-style: none;
+  padding: 2px 0;
+  cursor: pointer;
+}
