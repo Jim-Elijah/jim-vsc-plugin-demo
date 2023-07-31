@@ -4,20 +4,24 @@
   const vscode = acquireVsCodeApi();
 
   const ulEle = /** @type {HTMLElement} */ (
-    document.getElementById("news-wrapper")
+    document.getElementById("movie-wrapper")
   );
 
   ulEle.addEventListener(
     "click",
     (e) => {
-      const target = e.target;
-      const id = target.getAttribute('data-id');
-      console.log('target', target, id);
+      const liEle = e.target.closest('li');
+      const id = liEle.getAttribute('data-id');
+      const title = liEle.getAttribute('data-title');
+      console.log('id', id, title);
       if (!id) {
         console.log('empty id');
         return;
       }
-      vscode.postMessage(id);
+      vscode.postMessage({
+        id,
+        title,
+      });
     },
     false
   );

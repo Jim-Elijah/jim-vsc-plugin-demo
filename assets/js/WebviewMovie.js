@@ -5,9 +5,9 @@
 
   window.addEventListener("message", (event) => {
     const message = event.data; // The json data that the extension sent
-    console.log("RISCVNews webview", message);
+    console.log("movie webview", message);
     if (message) {
-      vscode.setState({ newsId: message });
+      vscode.setState(message);
     }
   });
 })();

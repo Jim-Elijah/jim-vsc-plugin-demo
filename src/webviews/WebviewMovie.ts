@@ -3,22 +3,28 @@ import { getNonce } from "../utils/helper";
 import request from "../utils/request";
 import { Movie } from "../types/response/Movies";
 
+interface MovieObj {
+    id: string;
+    title: string
+}
+
 export default class WebviewMovie {
     /**
      * Track the currently panel. Only allow a single panel to exist at a time.
      */
     public static currentPanel: WebviewMovie | undefined;
 
-    public static readonly viewType = "jim-vsc-wv-movies";
+    public static readonly viewType = "jim-vsc-movies";
     private static _id: string | number;
+    private static _title: string;
 
     private readonly _panel: vscode.WebviewPanel;
     private readonly _extensionUri: vscode.Uri;
     private _disposables: vscode.Disposable[] = [];
 
-    public static createOrShow(extensionUri: vscode.Uri, id: string | number) {
+    public static createOrShow(extensionUri: vscode.Uri, obj: MovieObj) {
         const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
-
+        const { id, title } = obj;
         // 已经有webview，且其id与正要展示的id一样
         if (WebviewMovie.currentPanel && id === WebviewMovie._id) {
             WebviewMovie.currentPanel._panel.reveal(column);
@@ -28,6 +34,7 @@ export default class WebviewMovie {
         if (WebviewMovie.currentPanel) {
             console.log("已经有webview, 且其id与正要展示的id不一样, 新的替换旧的");
             WebviewMovie._id = id;
+            WebviewMovie._title = title;
             WebviewMovie.currentPanel._update();
             return;
             // WebviewMovie.currentPanel.dispose();
@@ -35,7 +42,7 @@ export default class WebviewMovie {
         // Otherwise, create a new panel.
         const panel = vscode.window.createWebviewPanel(
             WebviewMovie.viewType,
-            "riscv news",
+            title,
             column || vscode.ViewColumn.One,
             {
                 enableScripts: true,
@@ -46,8 +53,8 @@ export default class WebviewMovie {
         WebviewMovie.currentPanel = new WebviewMovie(panel, extensionUri, id);
     }
 
-    public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, id: string | number) {
-        WebviewMovie.currentPanel = new WebviewMovie(panel, extensionUri, id);
+    public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, obj: MovieObj) {
+        WebviewMovie.currentPanel = new WebviewMovie(panel, extensionUri, obj.id);
     }
 
     private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, id: string | number) {
@@ -73,7 +80,10 @@ export default class WebviewMovie {
             this._disposables,
         );
 
-        this._panel.webview.postMessage(WebviewMovie._id);
+        this._panel.webview.postMessage({
+            id: WebviewMovie._id,
+            title: WebviewMovie._title,
+        });
 
         // Handle messages from the webview
         this._panel.webview.onDidReceiveMessage(
@@ -102,6 +112,7 @@ export default class WebviewMovie {
 
     private async _update() {
         const webview = this._panel.webview;
+        this._panel.title = WebviewMovie._title;
         // const res = await request<WebviewMovie>("get", `/news/${WebviewMovie._id}`, null);
         // this._panel.webview.html = this._getHtmlForWebview(webview, res);
         this._panel.webview.html = this._getHtmlForWebview(webview);

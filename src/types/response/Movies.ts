@@ -1,7 +1,13 @@
 export interface Movie {
-    link: string;
-    text: string;
     banner: string;
+    detail: string;
+    actors: string;
+    duration: string;
+    rate: string;
+    title: string;
 }
 
-export type MovieList = Array<Movie>;
+export interface HotMovie {
+    onPlayMvs: Array<Movie>
+}
+

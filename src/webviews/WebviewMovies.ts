@@ -2,8 +2,8 @@ import * as vscode from "vscode";
 import WebviewMovie from "./WebviewMovie";
 import { getNonce } from "../utils/helper";
 import request from "../utils/request";
-import { MovieList } from "../types/response/Movies";
-import { mockMovies } from './mock';
+import { HotMovie, Movie } from "../types/response/Movies";
+// import { mockMovies } from './mock';
 
 class WebviewMovies implements vscode.WebviewViewProvider {
     // ref https://github.com/microsoft/vscode-extension-samples/blob/main/webview-view-sample/src/extension.ts
@@ -27,8 +27,7 @@ class WebviewMovies implements vscode.WebviewViewProvider {
                         enableScripts: true,
                         localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, "assets")],
                     };
-                    const { newsId } = state || {};
-                    WebviewMovie.revive(webviewPanel, context.extensionUri, newsId);
+                    WebviewMovie.revive(webviewPanel, context.extensionUri, state || {});
                 },
             });
         }
@@ -48,20 +47,15 @@ class WebviewMovies implements vscode.WebviewViewProvider {
             localResourceRoots: [vscode.Uri.joinPath(this._extensionUri, "assets")],
         };
 
-        // const res = await request<MovieList>('get', '/news', null);
-        const res: MovieList = mockMovies;
-        webviewView.webview.html = this._getHtmlForWebview(webviewView.webview, res);
+        const res = await request<HotMovie>('get', '/movies/douban', null);
+        // const res: MovieList = mockMovies;
+        webviewView.webview.html = this._getHtmlForWebview(webviewView.webview, res.onPlayMvs);
 
         // 插件监听消息
         webviewView.webview.onDidReceiveMessage(
-            id => {
-                console.log("WebviewMovies onDidReceiveMessage", id);
-                WebviewMovie.createOrShow(this._extensionUri, id);
-                // if (data) {
-                //     vscode.window.showInformationMessage(text);
-                //     return;
-                // }
-                // vscode.window.showErrorMessage(text);
+            (obj) => {
+                console.log("WebviewMovies onDidReceiveMessage", obj);
+                WebviewMovie.createOrShow(this._extensionUri, obj);
             },
             undefined,
             [],
@@ -72,7 +66,7 @@ class WebviewMovies implements vscode.WebviewViewProvider {
         });
     }
 
-    private _getHtmlForWebview(webview: vscode.Webview, data: MovieList) {
+    private _getHtmlForWebview(webview: vscode.Webview, data: Array<Movie>) {
         // Local path to main script run in the webview
         const scriptPathOnDisk = vscode.Uri.joinPath(this._extensionUri, "assets", "js", "WebviewMovies.js");
 
@@ -84,6 +78,7 @@ class WebviewMovies implements vscode.WebviewViewProvider {
         console.log("webview.cspSource", webview.cspSource);
 
         const list = data;
+        console.log('hotMv list', list);
 
         // Local path to css styles
         const styleResetPath = vscode.Uri.joinPath(this._extensionUri, "assets", "css", "reset.css");
@@ -110,8 +105,17 @@ class WebviewMovies implements vscode.WebviewViewProvider {
 
 			</head>
 			<body>
-				<ul id='news-wrapper'>
-					${list.map(item => `<li class='news-item' data-id=${item.link}>${item.text}</li>`).join("")}
+				<ul id='movie-wrapper'>
+					${list.map(item => `<li class='movie-item' data-id=${item.detail} data-title=${item.title}>
+                        <div class='card-wrapper'>
+                            <div class="main">
+                                <div class="title">${item.title}</div>
+                                <div class="wx-name">${item.rate}</div>
+                                <img class="banner" src=${item.banner} />
+                            </div>
+                            <div class="origin">${item.duration}</div>
+                        </div>
+                    </li>`).join("")}
 				</ul>
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
