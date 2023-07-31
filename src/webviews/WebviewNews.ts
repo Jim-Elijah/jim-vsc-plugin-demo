@@ -1,7 +1,8 @@
 import * as vscode from "vscode";
 import { getNonce } from "../utils/helper";
+import { HotNews } from "../types/response/News";
 
-interface MovieObj {
+interface NewsObj {
     id: string;
     title: string
 }
@@ -12,7 +13,7 @@ export default class WebviewMovie {
      */
     public static currentPanel: WebviewMovie | undefined;
 
-    public static readonly viewType = "jim-vsc-movies";
+    public static readonly viewType = "jim-vsc-news";
     private static _id: string | number;
     private static _title: string;
 
@@ -20,7 +21,7 @@ export default class WebviewMovie {
     private readonly _extensionUri: vscode.Uri;
     private _disposables: vscode.Disposable[] = [];
 
-    public static createOrShow(extensionUri: vscode.Uri, obj: MovieObj) {
+    public static createOrShow(extensionUri: vscode.Uri, obj: NewsObj) {
         const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
         const { id, title } = obj;
         // 已经有webview，且其id与正要展示的id一样
@@ -51,7 +52,7 @@ export default class WebviewMovie {
         WebviewMovie.currentPanel = new WebviewMovie(panel, extensionUri, id);
     }
 
-    public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, obj: MovieObj) {
+    public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, obj: NewsObj) {
         const { id, title } = obj;
         WebviewMovie._id = id;
         WebviewMovie._title = title;

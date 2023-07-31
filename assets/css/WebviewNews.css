@@ -1,0 +1,21 @@
+/** @format */
+
+.conent {
+    font-size: 18px;
+}
+
+.id {
+    text-decoration: underline;
+    color: rgba(135, 255, 25, 0.7);
+}
+html,
+body,
+iframe {
+    width: 100%;
+    height: 100%;
+}
+#jim-iframe {
+  border: none;
+  margin: 0;
+}
+

@@ -5,7 +5,7 @@ import request from "../utils/request";
 import { HotMovie, Movie } from "../types/response/Movies";
 // import { mockMovies } from './mock';
 
-class WebviewMovies implements vscode.WebviewViewProvider {
+class WebviewMovieList implements vscode.WebviewViewProvider {
     // ref https://github.com/microsoft/vscode-extension-samples/blob/main/webview-view-sample/src/extension.ts
     public static readonly viewType = "jim-vsc.movies-view";
 
@@ -21,7 +21,7 @@ class WebviewMovies implements vscode.WebviewViewProvider {
             // Make sure we register a serializer in activation event
             vscode.window.registerWebviewPanelSerializer(WebviewMovie.viewType, {
                 async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
-                    console.log(`deserialize state: ${state}`);
+                    console.log(`deserialize state:`, state);
                     // Reset the webview options so we use latest uri for `localResourceRoots`.
                     webviewPanel.webview.options = {
                         enableScripts: true,
@@ -125,7 +125,7 @@ class WebviewMovies implements vscode.WebviewViewProvider {
 
 export default class Provider {
     constructor(context: vscode.ExtensionContext) {
-        const moviesProvider = new WebviewMovies(context);
+        const moviesProvider = new WebviewMovieList(context);
         context.subscriptions.push(vscode.window.registerWebviewViewProvider("movies", moviesProvider));
     }
 }

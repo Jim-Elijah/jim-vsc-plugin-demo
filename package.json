@@ -3,6 +3,7 @@
   "displayName": "jim-vsc-plugin-demo",
   "description": "",
   "publisher": "jim-elijah",
+  "icon": "assets/img/logo.png",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.78.0"
@@ -11,7 +12,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onWebviewPanel:jim-vsc-movies"
+    "onWebviewPanel:jim-vsc-movies",
+    "onWebviewPanel:jim-vsc-news"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -20,7 +22,7 @@
         {
           "id": "jim-vsc",
           "title": "jim-vsc",
-          "icon": "$(search)"
+          "icon": "assets/img/logo.png"
         }
       ]
     },
@@ -30,6 +32,12 @@
           "type": "webview",
           "id": "movies",
           "name": "hot movies",
+          "visibility": "visible"
+        },
+        {
+          "type": "webview",
+          "id": "news",
+          "name": "hot news",
           "visibility": "visible"
         }
       ]

@@ -1,0 +1,14 @@
+/** @format */
+
+#news-wrapper {
+    padding-left: 0;
+}
+.news-item {
+    list-style: none;
+    cursor: pointer;
+    margin-bottom: 6px;
+}
+.title {
+    font-weight: 700;
+    text-decoration: underline;
+}

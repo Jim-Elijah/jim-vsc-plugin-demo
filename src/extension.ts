@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import Movies from "./webviews/WebviewMovies";
+import Movies from "./webviews/WebviewMovieList";
+import News from './webviews/WebviewNewsList';
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('jim-vsc-plugin-demo.helloWorld', () => {
@@ -7,6 +8,7 @@ export function activate(context: vscode.ExtensionContext) {
 		console.log('command jim-vsc-plugin-demo.helloWorld triggered!');
 	}));
 	new Movies(context);
+	new News(context);
 }
 
 // This method is called when your extension is deactivated
