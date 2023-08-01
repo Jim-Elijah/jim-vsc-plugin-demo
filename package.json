@@ -46,6 +46,10 @@
       {
         "command": "jim-vsc-plugin-demo.helloWorld",
         "title": "Hello World1"
+      },
+      {
+        "command": "jim-vsc-call-cmd-on-other-ext",
+        "title": "jim-vsc open browser"
       }
     ]
   },
