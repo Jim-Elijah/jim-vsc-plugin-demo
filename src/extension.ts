@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import Movies from "./webviews/WebviewMovieList";
 import News from './webviews/WebviewNewsList';
+import Pty from './term/Pty';
+import CreateTermCmd from './term/CreateTermCmd';
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('jim-vsc-plugin-demo.helloWorld', () => {
@@ -9,6 +11,13 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 	new Movies(context);
 	new News(context);
+	new Pty(context);
+
+	const pty = vscode.window.createTerminal({
+        name: 'jim-pty',
+        pty: new CreateTermCmd()
+      });
+    pty.show();
 }
 
 // This method is called when your extension is deactivated

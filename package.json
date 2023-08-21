@@ -46,6 +46,14 @@
       {
         "command": "jim-vsc-plugin-demo.helloWorld",
         "title": "Hello World1"
+      },
+      {
+        "command": "jim-vsc-plugin-demo.create",
+        "title": "Pseudoterminal: Create"
+      },
+      {
+        "command": "jim-vsc-plugin-demo.clear",
+        "title": "Pseudoterminal: Clear"
       }
     ]
   },
