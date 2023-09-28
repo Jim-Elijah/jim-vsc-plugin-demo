@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { readFile } from 'fs';
 import { promisify } from 'util';
-import * as path from 'path'
+import * as path from 'path';
 
 const homeDir = process.env.HOME || process.env.USERPROFILE || "";
 const extDir = path.join(homeDir, ".vscode", "extensions", "extensions.json");
@@ -24,18 +24,18 @@ export default class UseBrowserLiteCmd {
     async openWithBrowseLite(url: string) {
         try {
             console.log('extDir', extDir);
-            const extensions = await promisify(readFile)(extDir)
-            const arr: Array<ExtensionJSONItem> = JSON.parse(extensions.toString('utf-8'))
-            const hasExist = arr.find(item => item.identifier.id === UseBrowserLiteCmd.browserExtId)
+            const extensions = await promisify(readFile)(extDir);
+            const arr: Array<ExtensionJSONItem> = JSON.parse(extensions.toString('utf-8'));
+            const hasExist = arr.find(item => item.identifier.id === UseBrowserLiteCmd.browserExtId);
             const enabled = vscode.extensions.getExtension(UseBrowserLiteCmd.browserExtId);
             console.log('hasExist', hasExist, enabled);
-            const allExts = vscode.extensions.all
+            const allExts = vscode.extensions.all;
             // console.log('allExts', allExts);
             const hasExist1 = allExts.find(item => item.id === 'antfu.browse-lite');
             console.log('hasExist', hasExist1);
             if (!hasExist) {
                 console.log('no exist');
-                await vscode.commands.executeCommand('workbench.extensions.installExtension', UseBrowserLiteCmd.browserExtId)
+                await vscode.commands.executeCommand('workbench.extensions.installExtension', UseBrowserLiteCmd.browserExtId);
                 console.log('install success');
             } else {
                 console.log('exist');
@@ -44,7 +44,7 @@ export default class UseBrowserLiteCmd {
                 } else {
                     console.log('disabled');
                 }
-                // vscode.commands.executeCommand('browse-lite.open', url || '');
+                vscode.commands.executeCommand('browse-lite.open', url || 'www.baidu.com');
             }
         } catch (e) {
             console.log('installBrowerExtension error', e);

@@ -4,6 +4,7 @@ import News from './webviews/WebviewNewsList';
 import UseBrowserLiteCmd from './commands/UseBrowserLiteCmd';
 import Pty from './term/Pty';
 import CreateTermCmd from './term/CreateTermCmd';
+import OutputChannel from './output/OutputChannel';
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('jim-vsc-plugin-demo.helloWorld', () => {
@@ -14,6 +15,22 @@ export function activate(context: vscode.ExtensionContext) {
 	new Movies(context);
 	new News(context);
 	new Pty(context);
+
+	const channel = OutputChannel.getSingleInstance()
+
+	const oldLog = console.log;
+	console.log = (...args) => {
+		// oldLog('hack log', args);
+		// channel.appendLine(args.toString());
+		// channel.show()
+	}
+
+
+	const arr = new Array(100).fill(0)
+	arr.forEach((item, index) => {
+		channel.appendLine([item, index].toString())
+	})
+	channel.show()
 
 	const pty = vscode.window.createTerminal({
         name: 'jim-pty',

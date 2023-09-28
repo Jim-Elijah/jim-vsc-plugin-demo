@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { getNonce } from "../utils/helper";
-import { HotNews } from "../types/response/News";
+// import { HotNews } from "../types/response/News";
 
 interface NewsObj {
     id: string;

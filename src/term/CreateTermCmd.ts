@@ -11,10 +11,10 @@ export default class CreateTermCmd implements vscode.Pseudoterminal {
 
     private shellProcess: ChildProcess | null = null;
     private cwd: string;
-    private termData: string = "";
-    private welcomeInfo: string = `welcome to terminal of ultrarisc-ide`;
+    private termData = "";
+    private welcomeInfo = `welcome to terminal of ultrarisc-ide`;
     private highlightInfo: string;
-    private writeHasEnd: boolean = false;
+    private writeHasEnd = false;
 
     constructor(cwd?: string) {
         this.cwd = cwd || "";
@@ -72,7 +72,7 @@ export default class CreateTermCmd implements vscode.Pseudoterminal {
     }
 
     close(): void {
-        console.log('close')
+        console.log('close');
         if (this.shellProcess) {
             // 终止子进程
             this.shellProcess.kill();
