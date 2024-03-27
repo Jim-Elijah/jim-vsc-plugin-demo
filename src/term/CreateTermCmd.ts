@@ -31,7 +31,7 @@ export default class CreateTermCmd implements vscode.Pseudoterminal {
     }
     genChildProcess() {
         // 创建子进程
-        this.shellProcess = spawn(os.platform() === "win32" ? "bash.exe" : "bash", [], {
+        this.shellProcess = spawn(os.platform() === "win32" ? "powershell.exe" : "bash", [], {
             cwd: this.cwd,
             env: process.env,
         });

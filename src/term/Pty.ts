@@ -1,11 +1,16 @@
 import * as vscode from "vscode";
+import * as os from 'os';
 import { exec as cpExec } from "child_process";
 import { promisify } from "util";
 
 // https://github.com/ShMcK/vscode-pseudoterminal/blob/master/src/extension.ts#L28
 
 // promisified Node executable (Node 10+)
-const exec = promisify(cpExec);
+// const exec = promisify(cpExec);
+const exec = cpExec;
+
+const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
+
 
 // Settings
 const defaultLine = "→ ";
@@ -46,7 +51,7 @@ class Pty {
 
         const pty = {
             onDidWrite: this.writeEmitter.event,
-            open: () => { console.log('open'); this.writeEmitter.fire(content);},
+            open: () => { console.log('open'); this.writeEmitter.fire(content); },
             close: () => {
                 console.log('close');
             },
@@ -60,18 +65,20 @@ class Pty {
                         const command = content.slice(defaultLine.length);
                         try {
                             // run the command
-                            const { stdout, stderr } = await exec(command, {
+                            const child = exec(command, {
                                 encoding: "utf8",
                                 cwd: workspaceRoot,
+                                shell,
+                                env: process.env,
                             });
-
-                            if (stdout) {
-                                this.writeEmitter.fire(formatText(stdout));
-                            }
-
-                            if (stderr && stderr.length) {
-                                this.writeEmitter.fire(formatText(stderr));
-                            }
+                            child.stdout!.on('data', data => {
+                                console.log('stdout 输出:', data);
+                                this.writeEmitter.fire(formatText(data));
+                            })
+                            child.stderr!.on('data', err => {
+                                console.log('error 输出:', err);
+                                this.writeEmitter.fire(formatText(err));
+                            })
                         } catch (error: any) {
                             this.writeEmitter.fire(`\r${formatText(error.message)}`);
                         }
@@ -97,6 +104,7 @@ class Pty {
             name: `PseudoTerminal Demo`,
             pty,
         });
+        console.log('this.terminal', this.terminal);
         this.terminal.show();
     }
     clear() {
@@ -106,17 +114,17 @@ class Pty {
 }
 
 export default class PtyWrapper {
-   constructor(context: vscode.ExtensionContext) {
-    const pty = new Pty(context);
-    context.subscriptions.push(
-        vscode.commands.registerCommand("jim-vsc-plugin-demo.create", () => {
-            pty.create();
-        })
-      );
-    context.subscriptions.push(
-        vscode.commands.registerCommand("jim-vsc-plugin-demo.clear", () => {
-            pty.clear();
-        })
-      );
-   }
+    constructor(context: vscode.ExtensionContext) {
+        const pty = new Pty(context);
+        context.subscriptions.push(
+            vscode.commands.registerCommand("jim-vsc-plugin-demo.create", () => {
+                pty.create();
+            })
+        );
+        context.subscriptions.push(
+            vscode.commands.registerCommand("jim-vsc-plugin-demo.clear", () => {
+                pty.clear();
+            })
+        );
+    }
 }

@@ -1,97 +1,179 @@
 {
-  "name": "jim-vsc-plugin-demo",
-  "displayName": "jim-vsc-plugin-demo",
-  "description": "",
-  "publisher": "jim-elijah",
-  "icon": "assets/img/logo.png",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.78.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onWebviewPanel:jim-vsc-movies",
-    "onWebviewPanel:jim-vsc-news"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "jim-vsc",
-          "title": "jim-vsc",
-          "icon": "assets/img/logo.png"
-        }
-      ]
+    "name": "jim-vsc-plugin-demo",
+    "displayName": "jim-vsc-plugin-demo",
+    "description": "",
+    "publisher": "jim-elijah",
+    "icon": "assets/img/logo.png",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.78.0"
     },
-    "views": {
-      "jim-vsc": [
-        {
-          "type": "webview",
-          "id": "movies",
-          "name": "hot movies",
-          "visibility": "visible"
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onWebviewPanel:jim-vsc-movies",
+        "onWebviewPanel:jim-vsc-news"
+    ],
+    "enabledApiProposals": [
+		"terminalExecuteCommandEvent"
+	],
+    "main": "./out/extension.js",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "jim-vsc",
+                    "title": "jim-vsc",
+                    "icon": "assets/img/logo.png"
+                }
+            ]
         },
-        {
-          "type": "webview",
-          "id": "news",
-          "name": "hot news",
-          "visibility": "visible"
-        }
-      ]
+        "views": {
+            "jim-vsc": [
+                {
+                    "type": "webview",
+                    "id": "movies",
+                    "name": "hot movies",
+                    "visibility": "visible"
+                },
+                {
+                    "type": "webview",
+                    "id": "news",
+                    "name": "hot news",
+                    "visibility": "visible"
+                },
+                {
+                    "id": "customTreeView",
+                    "name": "Custom Tree View"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "jim-vsc-plugin-demo.helloWorld",
+                "title": "Hello World1"
+            },
+            {
+                "command": "jim-vsc-call-cmd-on-other-ext",
+                "title": "jim-vsc open browser"
+            },
+            {
+                "command": "jim-vsc-plugin-demo.create",
+                "title": "Pseudoterminal: Create"
+            },
+            {
+                "command": "jim-vsc-plugin-demo.clear",
+                "title": "Pseudoterminal: Clear"
+            },
+            {
+                "command": "jim-vsc-plugin-demo.auto-edit",
+                "title": "auto edit"
+            },
+            {
+                "command": "run-in-spike",
+                "title": "In Spike"
+            },
+            {
+                "command": "run-in-qemu-user",
+                "title": "In Qemu-User"
+            },
+            {
+                "command": "run-in-qemu-with-ubuntu-22.04.03",
+                "title": "run-in-qemu-with-ubuntu-22.04.03"
+            },
+            {
+                "command": "run-in-qemu-with-ubuntu-23.10",
+                "title": "run-in-qemu-with-ubuntu-23.10"
+            },
+            {
+                "command": "run-in-qemu-with-debian-sid",
+                "title": "run-in-qemu-with-debian-sid"
+            }
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "group": "navigation",
+                    "submenu": "run-elf"
+                }
+            ],
+            "run-elf": [
+                {
+                    "group": "navigation@3",
+                    "submenu": "run-in-qemu"
+                },
+                {
+                    "group": "navigation@1",
+                    "command": "run-in-spike"
+                },
+                {
+                    "group": "navigation@2",
+                    "command": "run-in-qemu-user"
+                }
+            ],
+            "run-in-qemu": [
+                {
+                    "group": "navigation@1",
+                    "command": "run-in-qemu-with-ubuntu-23.10"
+                },
+                {
+                    "group": "navigation@2",
+                    "command": "run-in-qemu-with-ubuntu-22.04.03"
+                },
+                {
+                    "group": "navigation@3",
+                    "command": "run-in-qemu-with-debian-sid"
+                }
+            ]
+        },
+        "submenus": [
+            {
+                "id": "run-elf",
+                "label": "Run ELF"
+            },
+            {
+                "id": "run-in-qemu",
+                "label": "In Qemu"
+            }
+        ]
     },
-    "commands": [
-      {
-        "command": "jim-vsc-plugin-demo.helloWorld",
-        "title": "Hello World1"
-      },
-      {
-        "command": "jim-vsc-call-cmd-on-other-ext",
-        "title": "jim-vsc open browser"
-      },
-      {
-        "command": "jim-vsc-plugin-demo.create",
-        "title": "Pseudoterminal: Create"
-      },
-      {
-        "command": "jim-vsc-plugin-demo.clear",
-        "title": "Pseudoterminal: Clear"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --fix --ext ts",
-    "test": "node ./out/test/runTest.js"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^17.6.6",
-    "@commitlint/config-conventional": "^17.6.6",
-    "@types/glob": "^8.1.0",
-    "@types/mocha": "^10.0.1",
-    "@types/node": "16.x",
-    "@types/vscode": "^1.78.0",
-    "@typescript-eslint/eslint-plugin": "^5.59.1",
-    "@typescript-eslint/parser": "^5.59.1",
-    "@vscode/test-electron": "^2.3.0",
-    "chai": "^4.3.8",
-    "eslint": "^8.39.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "glob": "^8.1.0",
-    "husky": "^8.0.0",
-    "lint-staged": "^13.2.3",
-    "mocha": "^10.2.0",
-    "prettier": "^3.0.0",
-    "typescript": "^5.0.4"
-  },
-  "dependencies": {
-    "@types/chai": "^4.3.5",
-    "axios": "^1.4.0"
-  }
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --fix --ext ts",
+        "test": "node ./out/test/runTest.js",
+        "download-api": "dts dev",
+		"postdownload-api": "dts main",
+		"post12install": "npm run download-api"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^17.6.6",
+        "@commitlint/config-conventional": "^17.6.6",
+        "@types/glob": "^8.1.0",
+        "@types/mocha": "^10.0.1",
+        "@types/node": "16.x",
+        "@typescript-eslint/eslint-plugin": "^5.59.1",
+        "@typescript-eslint/parser": "^5.59.1",
+        "@vscode/dts": "^0.4.0",
+        "@vscode/test-electron": "^2.3.0",
+        "chai": "^4.3.8",
+        "eslint": "^8.39.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "glob": "^8.1.0",
+        "husky": "^8.0.0",
+        "lint-staged": "^13.2.3",
+        "mocha": "^10.2.0",
+        "prettier": "^3.0.0",
+        "typescript": "^5.0.4"
+    },
+    "dependencies": {
+        "@types/chai": "^4.3.5",
+        "axios": "^1.4.0",
+        "node-pty": "^1.0.0",
+        "node-pty-prebuilt-multiarch": "^0.10.1-pre.5"
+    }
 }
