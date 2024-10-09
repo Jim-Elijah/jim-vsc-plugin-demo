@@ -1,28 +1,175 @@
 import * as vscode from 'vscode';
-import Movies from "./webviews/WebviewMovieList";
-import News from './webviews/WebviewNewsList';
-import UseBrowserLiteCmd from './commands/UseBrowserLiteCmd';
-import Pty from './term/Pty';
-import NodePty from './term/NodePty';
+// import Movies from "./webviews/WebviewMovieList";
+// import News from './webviews/WebviewNewsList';
+// import UseBrowserLiteCmd from './commands/UseBrowserLiteCmd';
+// import Pty from './term/Pty';
+// import NodePty from './term/NodePty';
 
-import CreateTermCmd from './term/CreateTermCmd';
-import OutputChannel from './output/OutputChannel';
-import { activate as activateTreeView } from './treeViews/treeviewProvider';
-import { EchoTaskProvider } from "./echoTaskProvider";
+// import CreateTermCmd from './term/CreateTermCmd';
+// import OutputChannel from './output/OutputChannel';
+// import { activate as activateTreeView } from './treeViews/treeviewProvider';
+// import { EchoTaskProvider } from "./echoTaskProvider";
+import OrdersProvider from "./treeViews/Orders"
+import ResouceUsage from './webviews/ResouceUsage';
+import MonitorService from './monitor/monitorService';
+import SQLiteDB, { GlobalState } from './utils/db';
 
-
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('jim-vsc-plugin-demo.helloWorld', () => {
 		vscode.window.showInformationMessage('Hello World from jim-vsc-plugin-demo!');
 		console.log('command jim-vsc-plugin-demo.helloWorld triggered!');
 	}));
 
-	const workspaceRoot = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
-		? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
-	if (!workspaceRoot) {
-		return;
-	}
-context.subscriptions.push(vscode.tasks.registerTaskProvider(EchoTaskProvider.RakeType, new EchoTaskProvider()));
+
+	const connection = GlobalState.getInstance()
+	// console.log('connection', connection)
+	console.log('read', await connection.read())
+	// await connection.update("user", { name: 'zs' })
+	// console.log('read', await connection.read())
+
+
+
+	// new OrdersProvider(context)
+	// new ResouceUsage(context)
+
+	// const DEFAULT_ACCOUNT = {
+	// 	username: "root",
+	// 	password: "riscv",
+	// };
+	// const host = "192.168.253.220"
+	// const sshPort = 2223
+	// const timeout = 8 * 1000;
+
+	// const connectionConfig = {
+	// 	remote: {
+	// 		host,
+	// 		port: sshPort,
+	// 		username: DEFAULT_ACCOUNT.username,
+	// 		password: DEFAULT_ACCOUNT.password,
+	// 		timeout,
+	// 	},
+	// 	// onUpdate: async ({ cpuInfos, memInfos }) => {
+	// 	// 	console.log(`on update`, cpuInfos, memInfos)
+	// 	// },
+	// 	// onConnect: (clearTimerFn: Function) => {
+	// 	// 	EmulatorService.imagePerfsTimerMap[element.tooltip] = clearTimerFn;
+	// 	// },
+	// 	onDisconnect: () => {
+	// 		console.log(`connection to ${host} disconnect`);
+	// 	},
+	// 	// onInitData: () => {
+	// 	// 	return { cpuInfos, memInfos };
+	// 	// },
+	// };
+	// MonitorService.getPerfs(connectionConfig);
+
+	// vscode.window.tabGroups.onDidChangeTabs(async tabChangeEvent => {
+	// 	console.log("onDidChangeTabs", tabChangeEvent);
+	// 	const { opened, closed, changed } = tabChangeEvent;
+	// 	console.log('opened', opened.length);
+	// 	console.log('changed', changed.length);
+	// 	console.log('closed', closed.length);
+	// });
+
+
+	// const terminal = vscode.window.createTerminal('test exit');
+	// terminal.show();
+	// terminal.sendText(`pwd`);
+
+	// console.log('terminal name', terminal.name, terminal.state);
+	// terminal.sendText("wsl")
+	// setTimeout(() => {
+	// 	terminal.sendText(`ls && whoami`);
+	// 	// terminal.sendText(" exit")
+	// }, 5 * 1000);
+
+	// const disposableTerminal = vscode.window.onDidCloseTerminal((closedTerminal) => {
+	// 	console.log('onDidCloseTerminal', closedTerminal.name)
+	// 	if (closedTerminal === terminal) {
+	// 		console.log('CLOSE1111');
+	// 		// disposableTerminal.dispose();
+	// 	}
+	// });
+
+	// vscode.window.onDidCloseTerminal(async (terminal: vscode.Terminal) => {
+	// 	console.log('onDidCloseTerminal');
+	// 	console.log('name', terminal.name);
+	// 	console.log('state', terminal.state);
+	// 	console.log('exitStatus', terminal.exitStatus);
+	// 	const processId = await terminal.processId;
+	// 	console.log('processId', processId);
+	// });
+	// vscode.window.onDidChangeTerminalState(async (terminal: vscode.Terminal) => {
+	// 	console.log('onDidChangeTerminalState');
+	// 	console.log('name', terminal.name);
+	// 	console.log('state', terminal.state);
+	// 	console.log('exitStatus', terminal.exitStatus);
+	// 	const processId = await terminal.processId;
+	// 	console.log('processId', processId);
+	// });
+
+	// const workspaceRoot = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
+	// 	? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
+	// if (!workspaceRoot) {
+	// 	return;
+	// }
+	// context.subscriptions.push(vscode.tasks.registerTaskProvider(EchoTaskProvider.RakeType, new EchoTaskProvider()));
+
+
+
+	// const rootPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0] : '';
+	// if (rootPath) {
+	// const fsWatcher = vscode.workspace.createFileSystemWatcher(
+	// 	new vscode.RelativePattern(rootPath, 'annotation.yaml')
+	//   );
+	// const fsWatcher = vscode.workspace.createFileSystemWatcher('*/annotation.yaml');
+	// fsWatcher.onDidCreate((uri) => {
+	// 	console.log(`Created file: ${uri.fsPath}`);
+	// 	// 在这里添加对新创建的annotation.yaml文件的处理逻辑
+	// });
+
+	// fsWatcher.onDidChange((uri) => {
+	// 	console.log(`Changed file: ${uri.fsPath}`);
+	// 	// 在这里添加对修改的annotation.yaml文件的处理逻辑
+	// });
+
+	// fsWatcher.onDidDelete((uri) => {
+	// 	console.log(`Deleted file: ${uri.fsPath}`);
+	// 	// 在这里添加对删除的annotation.yaml文件的处理逻辑
+	// });
+
+	// }
+
+	// console.log('visibleTextEditors');
+	// vscode.window.visibleTextEditors.forEach(editor => {
+	// 	console.log(editor.document.uri);
+	// });
+	// async function getAllEditors() {
+	// 	const editors: vscode.TextEditor[] = [];
+	// 	const activeEditor = vscode.window.activeTextEditor;
+	// 	if (!activeEditor) {
+	// 		return editors;
+	// 	}
+	// 	editors.push(activeEditor)
+	// 	console.log('getAllEditors activeEditor', activeEditor.document.uri);
+	// 	while (true) {
+	// 		await vscode.commands.executeCommand('workbench.action.nextEditor');
+	// 		const newActiveEditor = vscode.window.activeTextEditor;
+	// 		if (newActiveEditor?.document === activeEditor.document) {
+	// 		// if (newActiveEditor === activeEditor) {
+	// 			// 已经遍历完所有编辑器
+	// 			break;
+	// 		}
+	// 		editors.push(newActiveEditor!);
+	// 	}
+	// 	return editors;
+	// }
+
+	// // 使用示例
+	// const editors = await getAllEditors();
+	// for (const editor of editors) {
+	// 	console.log(editor.document.fileName, editor.document.uri);
+	// }
 
 
 	// vscode.workspace.onDidChangeTextDocument(
@@ -124,16 +271,16 @@ context.subscriptions.push(vscode.tasks.registerTaskProvider(EchoTaskProvider.Ra
 
 	// 注册命令，用于打开 Tree View
 	//     context.subscriptions.push(vscode.commands.registerCommand('extension.showTreeView', () => {
-	//         vscode.window.createTreeView('customTreeView', { treeDataProvider: new TreeDataProvider() });
+	//         vscode.window.createTreeView('spider.customTreeView"', { treeDataProvider: new TreeDataProvider() });
 	//     }));
 
-	const commands = ['run-in-spike', 'run-in-qemu-user', 'run-in-qemu-with-ubuntu-22.04.03', 'run-in-qemu-with-ubuntu-23.10', 'run-in-qemu-with-debian-sid'];
-	// 注册菜单1指令
-	commands.forEach(cmd => {
-		context.subscriptions.push(vscode.commands.registerCommand(cmd, () => {
-			vscode.window.showInformationMessage(cmd);
-		}));
-	});
+	// const commands = ['run-in-spike', 'run-in-qemu-user', 'run-in-qemu-with-ubuntu-22.04.03', 'run-in-qemu-with-ubuntu-23.10', 'run-in-qemu-with-debian-sid'];
+	// // 注册菜单1指令
+	// commands.forEach(cmd => {
+	// 	context.subscriptions.push(vscode.commands.registerCommand(cmd, () => {
+	// 		vscode.window.showInformationMessage(cmd);
+	// 	}));
+	// });
 
 
 	// const terminal = vscode.window.createTerminal({

@@ -2,6 +2,7 @@ import axios, { Method, AxiosRequestConfig } from "axios";
 import { logger } from "./helper";
 import { baseURL } from "./config";
 import { ResponseData } from "../types/response";
+import { isWin } from "./env";
 
 axios.defaults.baseURL = baseURL;
 axios.interceptors.request.use(

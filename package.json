@@ -16,8 +16,8 @@
         "onWebviewPanel:jim-vsc-news"
     ],
     "enabledApiProposals": [
-		"terminalExecuteCommandEvent"
-	],
+        "terminalExecuteCommandEvent"
+    ],
     "main": "./out/extension.js",
     "contributes": {
         "viewsContainers": {
@@ -25,6 +25,13 @@
                 {
                     "id": "jim-vsc",
                     "title": "jim-vsc",
+                    "icon": "assets/img/logo.png"
+                }
+            ],
+            "panel": [
+                {
+                    "id": "resource-usage-views",
+                    "title": "resource usage",
                     "icon": "assets/img/logo.png"
                 }
             ]
@@ -44,8 +51,20 @@
                     "visibility": "visible"
                 },
                 {
-                    "id": "customTreeView",
-                    "name": "Custom Tree View"
+                    "id": "spider.customTreeView",
+                    "name": "Custom Tree View",
+                    "visibility": "collapsed"
+                },
+                {
+                    "id": "orders-view",
+                    "name": "orders-view"
+                }
+            ],
+            "resource-usage-views": [
+                {
+                    "id": "resource-usage",
+                    "type": "webview",
+                    "name": "resource-usage"
                 }
             ]
         },
@@ -89,6 +108,11 @@
             {
                 "command": "run-in-qemu-with-debian-sid",
                 "title": "run-in-qemu-with-debian-sid"
+            },
+            {
+                "command": "orders.refresh",
+                "title": "Refresh",
+                "icon": "$(refresh)"
             }
         ],
         "menus": {
@@ -125,6 +149,13 @@
                     "group": "navigation@3",
                     "command": "run-in-qemu-with-debian-sid"
                 }
+            ],
+            "view/title": [
+                {
+                    "command": "orders.refresh",
+                    "when": "view == orders-view",
+                    "group": "navigation@1"
+                }
             ]
         },
         "submenus": [
@@ -139,21 +170,21 @@
         ],
         "taskDefinitions": [
             {
-				"type": "echo",
-				"required": [
-					"task"
-				],
-				"properties": {
-					"task": {
-						"type": "string",
-						"description": "name for Echo Task"
-					},
-					"content": {
-						"type": "string",
-						"description": "content for Echo Task"
-					}
-				}
-			}
+                "type": "echo",
+                "required": [
+                    "task"
+                ],
+                "properties": {
+                    "task": {
+                        "type": "string",
+                        "description": "name for Echo Task"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "content for Echo Task"
+                    }
+                }
+            }
         ]
     },
     "scripts": {
@@ -164,15 +195,17 @@
         "lint": "eslint src --fix --ext ts",
         "test": "node ./out/test/runTest.js",
         "download-api": "dts dev",
-		"postdownload-api": "dts main",
-		"post12install": "npm run download-api"
+        "postdownload-api": "dts main",
+        "post12install": "npm run download-api"
     },
     "devDependencies": {
         "@commitlint/cli": "^17.6.6",
         "@commitlint/config-conventional": "^17.6.6",
         "@types/glob": "^8.1.0",
+        "@types/lodash": "^4.17.9",
         "@types/mocha": "^10.0.1",
         "@types/node": "16.x",
+        "@types/ssh2": "^1.15.1",
         "@typescript-eslint/eslint-plugin": "^5.59.1",
         "@typescript-eslint/parser": "^5.59.1",
         "@vscode/dts": "^0.4.0",
@@ -191,7 +224,11 @@
     "dependencies": {
         "@types/chai": "^4.3.5",
         "axios": "^1.4.0",
+        "lodash": "^4.17.21",
         "node-pty": "^1.0.0",
-        "node-pty-prebuilt-multiarch": "^0.10.1-pre.5"
+        "node-pty-prebuilt-multiarch": "^0.10.1-pre.5",
+        "sqlite": "^5.1.1",
+        "sqlite3": "^5.1.7",
+        "ssh2": "^1.16.0"
     }
 }

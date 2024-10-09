@@ -1,4 +1,9 @@
+import { ChildProcess, SpawnOptions, spawn, exec, ExecOptions } from "child_process";
 import { Color } from "../types";
+import EventEmitter = require("events");
+import { isWin } from "./env";
+
+export const bus = new EventEmitter();
 
 export const getFormatDateTime = (param?: Date | string | undefined) => {
     let date: Date;
@@ -82,3 +87,111 @@ export const logger = function (...args: any[]) {
     }
     console.log(`%c${getFormatDateTime()}`, `color: ${color}`, ...args);
 };
+
+export function sleep(delay: number) {
+    return new Promise<void>((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, delay | 1000);
+    });
+}
+
+export function interval(...args: any[]) {
+    const [callback, delay = 0, ...rest] = args;
+    // console.log('interval', callback, delay, rest);
+    let timer: NodeJS.Timer | null;
+    let cancelled = false;
+    async function repeat() {
+        if (!cancelled) {
+            await callback(...rest);
+            timer = setTimeout(repeat, delay);
+        }
+    }
+
+    timer = setTimeout(repeat, delay);
+
+    return () => {
+        if (!timer) {
+            console.log('timer has been cleared')
+        } else {
+            console.log('clear timer')
+            cancelled = true;
+            timer && clearTimeout(timer);
+            timer = null;
+        }
+    };
+}
+
+export function promisifyExec(
+    command: string,
+    execOptions?: null | ExecOptions,
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    callback?: (child: ChildProcess, resolve: Function, reject: Function) => void,
+    options?: null | {
+        encoding?: string;
+        onStdout?: (childProcess: ChildProcess, data: string) => void;
+        onStderr?: (childProcess: ChildProcess, data: string) => void;
+        attachStderr?: boolean;
+        hideStdout?: boolean;
+    },
+): Promise<{ stdout: string; stderr: string; code: number | null }> {
+    if (!execOptions || !execOptions.shell) {
+        execOptions = { ...(execOptions || {}), shell: isWin ? "powershell.exe" : "bash" };
+    }
+
+    return new Promise((resolve, reject) => {
+        const childProcess = exec(command, execOptions || {});
+        const { encoding = "utf-8", onStdout, onStderr, attachStderr, hideStdout } = options || {};
+        let stdout = "";
+        let stderr = "";
+        let code: number | null = null;
+
+        childProcess.stdout?.on("data", data => {
+            const str = data.toString(encoding);
+            if (!hideStdout) {
+                console.log(`stdout ${new Date().toLocaleTimeString()}`, str);
+            }
+            if (typeof onStdout === "function") {
+                onStdout(childProcess, str);
+            }
+            stdout += str;
+        });
+
+        childProcess.stderr?.on("data", data => {
+            const str = data.toString(encoding);
+            console.log(`stderr ${new Date().toLocaleTimeString()}`, str);
+            if (typeof onStderr === "function") {
+                onStderr(childProcess, str);
+            }
+            stderr += str;
+        });
+
+        childProcess.on("close", exitCode => {
+            console.log("close", exitCode);
+            code = exitCode;
+            if (exitCode === 0) {
+                resolve({ stdout, stderr, code });
+                return;
+            }
+            if (attachStderr) {
+                const error = new Error(`Exec ${command} Error. Process exited with code ${code}. Stderr: ${stderr} `);
+                (error as any).stderr = stderr;
+                (error as any).code = exitCode;
+                reject(error);
+                return;
+            }
+            const error = new Error(`Exec ${command} Error. Process exited with code ${code}.`);
+            (error as any).code = exitCode;
+            reject(error);
+        });
+
+        // 手动触发close，ssh连接服务器需要输入密码时
+        if (typeof callback === "function") {
+            callback(childProcess, resolve, reject);
+        }
+
+        childProcess.on("error", err => {
+            reject(err);
+        });
+    });
+}
