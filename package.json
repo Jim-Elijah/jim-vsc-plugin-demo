@@ -136,6 +136,24 @@
                 "id": "run-in-qemu",
                 "label": "In Qemu"
             }
+        ],
+        "taskDefinitions": [
+            {
+				"type": "echo",
+				"required": [
+					"task"
+				],
+				"properties": {
+					"task": {
+						"type": "string",
+						"description": "name for Echo Task"
+					},
+					"content": {
+						"type": "string",
+						"description": "content for Echo Task"
+					}
+				}
+			}
         ]
     },
     "scripts": {

@@ -8,6 +8,7 @@ import NodePty from './term/NodePty';
 import CreateTermCmd from './term/CreateTermCmd';
 import OutputChannel from './output/OutputChannel';
 import { activate as activateTreeView } from './treeViews/treeviewProvider';
+import { EchoTaskProvider } from "./echoTaskProvider";
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -16,15 +17,37 @@ export function activate(context: vscode.ExtensionContext) {
 		console.log('command jim-vsc-plugin-demo.helloWorld triggered!');
 	}));
 
-	vscode.window.onDidExecuteTerminalCommand(({ terminal, commandLine, cwd, exitCode, output }) => {
-		console.log('onDidExecuteTerminalCommand')
-		console.log('name', terminal.name)
-		console.log('commandLine', commandLine)
-		console.log('cwd', cwd)
-		console.log('exitCode', exitCode)
-		console.log('output', output)
-		console.log(`--------------------------------`)
-	})
+	const workspaceRoot = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
+		? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
+	if (!workspaceRoot) {
+		return;
+	}
+context.subscriptions.push(vscode.tasks.registerTaskProvider(EchoTaskProvider.RakeType, new EchoTaskProvider()));
+
+
+	// vscode.workspace.onDidChangeTextDocument(
+	// 	event => {
+	// 		console.log("onDidChangeTextDocument");
+	// 		const { document, contentChanges, reason } = event;
+	// 		const { uri, fileName, languageId } = document;
+	// 		console.log("doc info", uri, fileName, languageId);
+	// 		console.log('contentChanges', contentChanges);
+	// 		console.log("reason", reason);
+	// 	},
+	// 	null,
+	// 	context.subscriptions,
+	// );
+
+
+	// vscode.window.onDidExecuteTerminalCommand(({ terminal, commandLine, cwd, exitCode, output }) => {
+	// 	console.log('onDidExecuteTerminalCommand')
+	// 	console.log('name', terminal.name)
+	// 	console.log('commandLine', commandLine)
+	// 	console.log('cwd', cwd)
+	// 	console.log('exitCode', exitCode)
+	// 	console.log('output', output)
+	// 	console.log(`--------------------------------`)
+	// })
 
 	// new UseBrowserLiteCmd(context);
 	// new Movies(context);
@@ -131,33 +154,33 @@ export function activate(context: vscode.ExtensionContext) {
 	// terminal3.show();
 	// terminal3.sendText(`ssh zoujinqiang@192.168.253.220`)
 
-	vscode.window.onDidCloseTerminal(async (terminal: vscode.Terminal) => {
-		console.log('onDidCloseTerminal');
-		console.log('name', terminal.name);
-		console.log('state', terminal.state);
-		console.log('exitStatus', terminal.exitStatus);
-		const processId = await terminal.processId;
-		console.log('processId', processId);
-	});
-	vscode.window.onDidChangeTerminalState(async (terminal: vscode.Terminal) => {
-		console.log('onDidChangeTerminalState');
-		console.log('name', terminal.name);
-		console.log('state', terminal.state);
-		console.log('exitStatus', terminal.exitStatus);
-		const processId = await terminal.processId;
-		console.log('processId', processId);
-	});
-	vscode.window.onDidChangeActiveTerminal(async (terminal?: vscode.Terminal) => {
-		console.log('onDidChangeActiveTerminal');
-		if (!terminal) {
-			return;
-		}
-		console.log('name', terminal.name);
-		console.log('state', terminal.state);
-		console.log('exitStatus', terminal.exitStatus);
-		const processId = await terminal.processId;
-		console.log('processId', processId);
-	});
+	// vscode.window.onDidCloseTerminal(async (terminal: vscode.Terminal) => {
+	// 	console.log('onDidCloseTerminal');
+	// 	console.log('name', terminal.name);
+	// 	console.log('state', terminal.state);
+	// 	console.log('exitStatus', terminal.exitStatus);
+	// 	const processId = await terminal.processId;
+	// 	console.log('processId', processId);
+	// });
+	// vscode.window.onDidChangeTerminalState(async (terminal: vscode.Terminal) => {
+	// 	console.log('onDidChangeTerminalState');
+	// 	console.log('name', terminal.name);
+	// 	console.log('state', terminal.state);
+	// 	console.log('exitStatus', terminal.exitStatus);
+	// 	const processId = await terminal.processId;
+	// 	console.log('processId', processId);
+	// });
+	// vscode.window.onDidChangeActiveTerminal(async (terminal?: vscode.Terminal) => {
+	// 	console.log('onDidChangeActiveTerminal');
+	// 	if (!terminal) {
+	// 		return;
+	// 	}
+	// 	console.log('name', terminal.name);
+	// 	console.log('state', terminal.state);
+	// 	console.log('exitStatus', terminal.exitStatus);
+	// 	const processId = await terminal.processId;
+	// 	console.log('processId', processId);
+	// });
 }
 
 // This method is called when your extension is deactivated
